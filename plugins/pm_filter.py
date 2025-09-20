@@ -46,7 +46,7 @@ async def give_filter(client, message):
         if settings.get('auto_ffilter', None):
             await auto_filter(client, message)
         else:
-            await asyncio.sleep(600)
+            await asyncio.sleep(3600)
         if glob:
             await glob.delete()
         if manual:
