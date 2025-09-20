@@ -1,29 +1,32 @@
+
 FROM python:3.10-slim-bullseye
 
+# Prevent interactive prompts
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Install git
-RUN apt-get update && apt-get install -y --no-install-recommends git \
-    && rm -rf /var/lib/apt/lists/*
+# Install system dependencies
+RUN apt-get update && apt-get upgrade -y && \
+    apt-get install -y git && \
+    rm -rf /var/lib/apt/lists/*
 
-# Copy requirements first
+# Copy requirements first (better cache usage)
 COPY requirements.txt /requirements.txt
 
-# Install deps
-RUN pip install --no-cache-dir -U pip \
-    && pip install --no-cache-dir -r /requirements.txt
+# Upgrade pip and install requirements
+RUN pip3 install --no-cache-dir -U pip && \
+    pip3 install --no-cache-dir -r /requirements.txt
 
-# Workdir
-WORKDIR /app
+# Create app directory
+WORKDIR /DQTheFileDonor
 
-# Copy everything (including start.sh)
-COPY . /app
+# Copy project files
+COPY . /DQTheFileDonor
 
 # Make start.sh executable
-RUN chmod +x /app/start.sh
+RUN chmod +x /start.sh
 
-# Expose port for Koyeb
+# Expose port for healthcheck
 EXPOSE 8080
 
-# Run bot
-CMD ["bash", "/app/start.sh"]
+# Start the bot
+CMD ["/bin/bash", "/start.sh"]
