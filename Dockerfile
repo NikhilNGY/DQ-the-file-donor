@@ -1,30 +1,29 @@
 FROM python:3.10-slim-bullseye
 
-# Set non-interactive mode for apt
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Install git (needed for some bots)
+# Install git
 RUN apt-get update && apt-get install -y --no-install-recommends git \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy requirements first for caching
+# Copy requirements first
 COPY requirements.txt /requirements.txt
 
-# Install Python dependencies
+# Install deps
 RUN pip install --no-cache-dir -U pip \
     && pip install --no-cache-dir -r /requirements.txt
 
-# Set working directory
+# Workdir
 WORKDIR /app
 
-# Copy all project files
+# Copy everything (including start.sh)
 COPY . /app
 
 # Make start.sh executable
-RUN chmod +x /start.sh
+RUN chmod +x /app/start.sh
 
-# Expose port for Koyeb health check
+# Expose port for Koyeb
 EXPOSE 8080
 
-# Start the bot
-CMD ["bash", "/start.sh"]
+# Run bot
+CMD ["bash", "/app/start.sh"]
