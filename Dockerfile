@@ -1,4 +1,3 @@
-
 FROM python:3.10-slim-bullseye
 
 # Prevent interactive prompts
@@ -22,11 +21,8 @@ WORKDIR /DQTheFileDonor
 # Copy project files
 COPY . /DQTheFileDonor
 
-# Make start.sh executable
-RUN chmod +x /start.sh
-
 # Expose port for healthcheck
 EXPOSE 8080
 
-# Start the bot
-CMD ["/bin/bash", "/start.sh"]
+# Start the bot directly (replace bot.py if different)
+CMD ["python3", "-m", "bot"]
